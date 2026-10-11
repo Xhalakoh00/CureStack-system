@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Dashboard | CuraStack</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+
+  <div class="max-w-6xl mx-auto">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-800">CuraStack Clinic Dashboard</h1>
+      <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold text-sm">Live Feed</span>
+    </div>
+
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Patient Name</th>
+            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Contact</th>
+            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Requested Date</th>
+            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Issue / Pain Level</th>
+            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
+          <!-- Rows injected via JavaScript -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    async function fetchIntakes() {
+      const response = await fetch('/api/intakes');
+      const data = await response.json();
+      const tableBody = document.getElementById('tableBody');
+      
+      tableBody.innerHTML = data.map(intake => `
+        <tr class="hover:bg-gray-50">
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${intake.patientName}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${intake.email}<br><span class="text-xs">${intake.phone}</span></td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${intake.appointmentDate}</td>
+          <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">${intake.chiefComplaint} <br> <span class="font-bold text-red-500">Pain: ${intake.painLevel}/10</span></td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm">
+            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+              ${intake.status}
+            </span>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    fetchIntakes();
+    // Auto-refresh every 10 seconds for the demo
+    setInterval(fetchIntakes, 10000);
+  </script>
+</body>
+</html>

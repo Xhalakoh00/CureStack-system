@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Intake | CuraStack Demo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 flex items-center justify-center min-h-screen p-4">
+
+  <div class="max-w-md w-full bg-white rounded-xl shadow-lg p-8 border border-gray-100">
+    <div class="text-center mb-8">
+      <h2 class="text-2xl font-bold text-gray-800">New Patient Intake</h2>
+      <p class="text-sm text-gray-500 mt-2">Please complete your pre-visit details.</p>
+    </div>
+
+    <form id="intakeForm" class="space-y-5">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Full Name</label>
+        <input type="text" id="patientName" required class="mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="Jane Doe">
+      </div>
+      
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Email</label>
+          <input type="email" id="email" required class="mt-1 w-full p-3 border border-gray-300 rounded-lg" placeholder="jane@mail.com">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Phone</label>
+          <input type="tel" id="phone" required class="mt-1 w-full p-3 border border-gray-300 rounded-lg" placeholder="555-0198">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Requested Appointment Date</label>
+        <input type="date" id="appointmentDate" required class="mt-1 w-full p-3 border border-gray-300 rounded-lg">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Primary Reason for Visit (Chief Complaint)</label>
+        <textarea id="chiefComplaint" required rows="3" class="mt-1 w-full p-3 border border-gray-300 rounded-lg" placeholder="e.g., Lower back pain when lifting..."></textarea>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Current Pain Level (1-10)</label>
+        <input type="number" id="painLevel" min="1" max="10" required class="mt-1 w-full p-3 border border-gray-300 rounded-lg" placeholder="5">
+      </div>
+
+      <button type="submit" class="w-full bg-blue-600 text-white font-semibold p-3 rounded-lg hover:bg-blue-700 transition">
+        Submit Intake Data
+      </button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('intakeForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const payload = {
+        patientName: document.getElementById('patientName').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        appointmentDate: document.getElementById('appointmentDate').value,
+        chiefComplaint: document.getElementById('chiefComplaint').value,
+        painLevel: document.getElementById('painLevel').value
+      };
+
+      try {
+        const response = await fetch('/api/intake', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if(response.ok) {
+          alert('Intake successfully submitted! The clinic will review your details.');
+          e.target.reset();
+        }
+      } catch (err) {
+        alert('Error submitting form.');
+      }
+    });
+  </script>
+</body>
+</html>
